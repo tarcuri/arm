@@ -5,8 +5,8 @@ len = . - string
 
 .text
 
-.globl	_start
-_start:
+.globl	main
+main:
 	mov	%r0, $1		@ fd -> stdout
 	ldr	%r1, =string	@ pointer to string
 	ldr	%r2, =len	@ message length
