@@ -20,6 +20,8 @@ loop:
   ldr   %r1, [%r6]
   mov   %r2, $1024
   bl    read          @ read user input
+  cmp   %r0, $0
+  beq   done
   mov   %r0, $1
   bl    write
   mov   %r0, %r1
@@ -27,3 +29,7 @@ loop:
   mov   %r2, $1024
   bl    memset
   bl    loop
+done:
+  mov   %r0, $0
+  mov   %r7, $1
+  swi   $0
