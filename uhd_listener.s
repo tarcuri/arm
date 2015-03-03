@@ -1,21 +1,21 @@
 .data
 SOCK_FD:
-  .word
+  .word  0x0
 
 SOCKADDR_IN:
-  .byte   0x0
-  .byte   0x0
-  .byte   0x0
-  .byte   0x0
-  .word   0x0
-  .word   0x0
-  .word   0x0
+  .byte  0x0
+  .byte  0x0
+  .byte  0x0
+  .byte  0x0
+  .word  0x0
+  .word  0x0
+  .word  0x0
 
 PORT:
-  .word   0x1389
+  .word  0x0010       @ port 4096 after htons
 
 BUFFER:
-  .word
+  .word  0x0
 
 .text
 
@@ -26,6 +26,7 @@ BUFFER:
 .extern read
 .extern write
 .extern memset
+.extern htonl
 
 main:
   mov   %r0, $2         @ AF_INET
@@ -36,9 +37,10 @@ main:
   str   %r0, [%r1]      @ store socket descriptor
   ldr   %r1, =SOCKADDR_IN
   mov   %r2, $2         @ AF_INET
-  str   %r2, [%r1]
-  ldr   %r2, =PORT      @ PORT
-  str   %r2, [%r1, $2]
+  strh  %r2, [%r1]
+  ldr   %r3, =PORT      @ PORT
+  ldr   %r2, [%r3]
+  strh  %r2, [%r1, $2]
   mov   %r2, $0         @ INADDR_ANY
   str   %r2, [%r1, $4]
   mov   %r2, $16
@@ -48,15 +50,16 @@ main:
   ldr   %r1, =BUFFER
   str   %r0, [%r1]
 LOOP:
-  ldr   %r0, =SOCK_FD
-  ldr   %r1, =BUFFER
+  ldr   %r3, =SOCK_FD
+  ldr   %r4, =BUFFER
+  ldr   %r0, [%r3]
+  ldr   %r1, [%r4]
   mov   %r2, $1024
   bl    read
   mov   %r2, %r0
   mov   %r0, $1
-  ldr   %r1, =BUFFER
   bl    write
-  ldr   %r0, =BUFFER
+  mov   %r0, %r1
   mov   %r1, $0
   mov   %r2, $1024
   bl    memset

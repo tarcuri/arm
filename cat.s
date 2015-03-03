@@ -1,6 +1,6 @@
 .data
 line:
-  .word
+  .word   0x0
 
 .text
 .globl main

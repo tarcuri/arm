@@ -7,7 +7,7 @@ value_msg:
   .string "Valued stored: %d\n"
 
 mem_ptr:
-  .word
+  .word  0x0
 
 .text
 .globl main
